@@ -26,7 +26,8 @@ def publish_data():
     humid = dataCollector.get_humidity()
     message = {
         'temperature': temp,
-        'humidity': humid
+        'humidity': humid,
+        'sac_temperature':sac_temp
         }
     pubnub.publish().channel('Temperature_Status_Channel').message(message).async(publish_callback)
     
@@ -37,6 +38,7 @@ class SACListener(SubscribeCallback):
         
         if(channel == 'Temperature_Command_Channel'):
             req = message['Request']
+            print(message)
             if(req == 'Get_Data'):
                 publish_data()
             if(req == 'Change_Temp'):
