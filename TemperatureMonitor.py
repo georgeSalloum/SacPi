@@ -22,15 +22,23 @@ class TemperatureMonitor(threading.Thread):
         def message(self, pubnub, message):
             channel = message.channel
             message = message.message
-            if(channel == 'Temperature_Command_Channel'):
-                req = message['Request']
+            #Android
+            if(channel == 'Temperature_Command_Channel_Android'):
                 print(message)
+                message = message['nameValuePairs'];
+                req = message['Request']
                 if(req == 'Get_Data_Load'):
                     TemperatureMonitor().publish_data(self.sac_temp,'Temperature_Data_Load_Channel')
+                if(req == 'Change_Temp'):
+                    new_temp = message['Temperature']
+                    self.update_temperature(new_temp)
+                    TemperatureMonitor().publish_data(self.sac_temp,'Temperature_Data_Load_Channel')   
+            
+            #WebApplication/js
+            if(channel == 'Temperature_Command_Channel'):
+                req = message['Request'] 
                 if(req == 'Get_Data_Real_Time'):
                     TemperatureMonitor().publish_data(self.sac_temp,'Temperature_Real_Time_Channel')
-                if(req == 'Get_Data_Storage'):
-                    TemperatureMonitor().publish_data(self.sac_temp,'Temperature_Storage_Channel')
                 if(req == 'Change_Temp'):
                     new_temp = message['Temperature']
                     self.update_temperature(new_temp)
@@ -64,6 +72,7 @@ class TemperatureMonitor(threading.Thread):
                         'sac_temperature':sac_temp
                         }
                        }
+        print(channel_name)
         self.pubnub.publish().channel(channel_name).message(message).async(self.publish_callback)
 
 
@@ -71,6 +80,7 @@ class TemperatureMonitor(threading.Thread):
         listener = self.SACListener()
         self.pubnub.add_listener(listener)
         self.pubnub.subscribe().channels('Temperature_Command_Channel').execute()
+        self.pubnub.subscribe().channels('Temperature_Command_Channel_Android').execute()
 
             
     def run(self):
