@@ -6,7 +6,7 @@ from DataCollector import DataCollector
 
 class LocalDbHandler(threading.Thread):
     
-    
+    #sac_data (date DATE, time TIME, temperature NUMERIC, humidity NUMERIC)
     def collect_data(self):
         dataCollector = DataCollector()
         conn = sqlite3.connect('sac.db');
