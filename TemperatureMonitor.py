@@ -48,7 +48,7 @@ class TemperatureMonitor(threading.Thread):
                 if(req == 'Change_Temp'):
                     new_temp = message['Temperature']
                     self.update_temperature(new_temp)
-                    TemperatureMonitor().publish_data(self.sac_temp,auto_mode,'Temperature_Data_Load_Channel')
+                    TemperatureMonitor().publish_data(self.sac_temp,self.auto_mode,'Temperature_Data_Load_Channel')
                     
              #MachineLearner
             if(channel == 'Temperature_Command_Channel_ML'):
